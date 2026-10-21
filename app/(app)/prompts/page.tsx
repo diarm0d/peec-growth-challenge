@@ -326,7 +326,7 @@ export default function PromptsPage() {
                     }}
                     className="rounded-lg bg-[#171717] px-3 py-2 text-sm text-white"
                   >
-                    Upgrade for more prompts
+                    Unlock 100 more prompts
                   </Button>
                 </div>
               </>
