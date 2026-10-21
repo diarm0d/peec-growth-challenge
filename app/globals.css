@@ -155,3 +155,99 @@ body {
     @apply font-sans;
   }
 }
+
+.shimmer {
+  text-align: center;
+  color: #737373;
+  background: -webkit-gradient(
+    linear,
+    left top,
+    right top,
+    from(#737373),
+    to(#737373),
+    color-stop(0.5, #b87a68)
+  );
+  
+  background: -moz-gradient(
+    linear,
+    left top,
+    right top,
+    from(#737373),
+    to(#737373),
+    color-stop(0.5, #b87a68)
+  );
+  background: gradient(
+    linear,
+    left top,
+    right top,
+    from(#737373),
+    to(#737373),
+    color-stop(0.5, #b87a68)
+  );
+  -webkit-background-size: 125px 100%;
+  -moz-background-size: 125px 100%;
+  background-size: 125px 100%;
+  -webkit-background-clip: text;
+  -moz-background-clip: text;
+  background-clip: text;
+  -webkit-animation-name: shimmer;
+  -moz-animation-name: shimmer;
+  animation-name: shimmer;
+  -webkit-animation-duration: 3s;
+  -moz-animation-duration: 3s;
+  animation-duration: 3s;
+  -webkit-animation-iteration-count: infinite;
+  -moz-animation-iteration-count: infinite;
+  animation-iteration-count: infinite;
+  background-repeat: no-repeat;
+  background-position: 0 0;
+  background-color: #737373;
+}
+
+@-moz-keyframes shimmer {
+  0% {
+    background-position: top left;
+  }
+
+  100% {
+    background-position: top right;
+  }
+}
+
+@-webkit-keyframes shimmer {
+  0% {
+    background-position: top left;
+  }
+
+  100% {
+    background-position: top right;
+  }
+}
+
+@-o-keyframes shimmer {
+  0% {
+    background-position: top left;
+  }
+
+  100% {
+    background-position: top right;
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: top left;
+  }
+
+  100% {
+    background-position: top right;
+  }
+}
+
+@theme {
+  --animate-reveal: reveal 0.5s ease forwards;
+
+  @keyframes reveal {
+    to { color: var(--color-neutral-900); }
+  }
+}
