@@ -2,14 +2,14 @@ import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import { Geist } from "next/font/google";
 import { cn } from "@/lib/utils";
+import { PostHogProvider, PostHogPageView } from "@posthog/next";
 
-const geist = Geist({subsets:['latin'],variable:'--font-sans'});
+const geist = Geist({ subsets: ["latin"], variable: "--font-sans" });
 
 export const metadata: Metadata = {
-  title: "peec — AI search analytics",
+  title: "Peec — AI search analytics",
   description:
     "Track, analyze, and improve brand performance on AI search platforms.",
-  generator: "v0.app",
   icons: {
     icon: [
       {
@@ -44,7 +44,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={cn("font-sans", geist.variable)}>
-      <body className="antialiased">{children}</body>
+      <body>
+        <PostHogProvider clientOptions={{ api_host: "/hire-me", ui_host: "https://eu.posthog.com" }}>
+          <PostHogPageView captureRouteTemplate />
+          {children}
+        </PostHogProvider>
+      </body>
     </html>
   );
 }

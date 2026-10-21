@@ -1,3 +1,4 @@
+"use client"
 import { useState, type SyntheticEvent } from "react";
 import posthog from "posthog-js";
 import { Loader2, Sparkles, ArrowRight } from "lucide-react";
@@ -93,7 +94,7 @@ export default function ReportForm() {
           disabled={submitting}
           aria-invalid={!!error}
           aria-describedby={error ? "report-form-error" : undefined}
-          className="h-full px-6 py-3 text-lg bg-white focus-visible:ring-0"
+          className="h-full px-6 py-3 text-lg bg-white placeholder:text-lg placeholder:text-muted-foreground focus-visible:ring-0"
           placeholder="Enter your work email"
         />
         <Button

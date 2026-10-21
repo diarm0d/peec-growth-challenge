@@ -1,5 +1,4 @@
 import {
-    ArrowRight,
     BarChart3,
     CircleHelp,
     Download,
@@ -7,8 +6,6 @@ import {
     Grid2X2,
     Search,
     Smile,
-    Sparkles,
-    Tag,
     TrendingUp,
   } from "lucide-react";
 

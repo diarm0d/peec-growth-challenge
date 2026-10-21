@@ -1,5 +1,5 @@
 "use client";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import {
   ArrowRight,
   ChevronDown,
@@ -14,21 +14,24 @@ import ReportForm from "@/components/forms/ReportForm";
 import Logo from "@/components/custom/Logo";
 import DashboardPreview from "@/components/custom/DashboardPreview";
 import posthog from "posthog-js";
-import { useFeatureFlagEnabled } from "@posthog/react";
+import { useFeatureFlagVariantKey } from "posthog-js/react";
+import { useHydrated } from "../hooks/use-hydrated";
 
 const navItems = ["Product", "Pricing", "Resources", "Partnerships", "Careers"];
 
 export default function Page() {
-  const showReportInputFeature = useFeatureFlagEnabled("report-input-feature");
+  const hydrated = useHydrated()
+  const selfServeVariant = useFeatureFlagVariantKey("new-self-serve-flow");
+
 
   useEffect(() => {
-    if (showReportInputFeature !== undefined) {
+    if (selfServeVariant !== undefined) {
       posthog.capture("$feature_flag_called", {
-        $feature_flag: "report-input-feature",
-        $feature_flag_response: showReportInputFeature,
+        $feature_flag: "new-self-serve-flow",
+        $feature_flag_response: selfServeVariant,
       });
     }
-  }, [showReportInputFeature]);
+  }, [selfServeVariant]);
 
   return (
     <main className="min-h-screen overflow-hidden bg-background text-foreground">
@@ -82,10 +85,10 @@ export default function Page() {
             Sentiment
           </span>
         </p>
-        {showReportInputFeature ? (
-          <SalesButtons />
-        ) : (
+        {hydrated && selfServeVariant === "test" ? (
           <ReportForm />
+        ) : (
+          <SalesButtons />
         )}
         <DashboardPreview />
       </section>
