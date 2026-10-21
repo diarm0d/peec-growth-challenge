@@ -10,8 +10,11 @@ import {
   Search,
   Sparkles,
   X,
+  HatGlasses,
 } from "lucide-react";
 import Image from "next/image";
+import posthog from "posthog-js";
+import { Button } from "@/components/ui/button";
 
 const prompts = [
   "Compare the durability of Nike basketballs versus Spalding for outdoor court play.",
@@ -38,36 +41,34 @@ export default function PromptsPage() {
               priority
             />
           </a>{" "}
-          Prompts
+          | Prompts
         </div>
         <div className="flex gap-2">
-          <button className="rounded-xl bg-[#f6f6f6] px-4 py-2 text-sm font-medium">
-            ◯ Agent
-          </button>
-          <button className="rounded-xl bg-[#f6f6f6] px-4 py-2 text-sm font-medium">
+          <Button className="px-4 py-2 text-sm font-medium">
+            <HatGlasses className="mr-1 inline h-4 w-4" />
+            Agent
+          </Button>
+          <Button className="px-4 py-2 text-sm font-medium">
             <HelpCircle className="mr-1 inline h-4 w-4" />
             Help
-          </button>
+          </Button>
         </div>
       </header>
       <div className="flex flex-wrap gap-2 border-b border-[#e6e6e6] bg-white px-6 py-3 lg:px-9">
-        <button className="flex control">
+        <Button className="flex control">
           ▦ &nbsp; Nike <ChevronDown />
-        </button>
-        <button className="flex control">
+        </Button>
+        <Button className="flex control">
           <CalendarDays /> All time <ChevronDown />
-        </button>
-        <button className="flex control">
+        </Button>
+        <Button className="flex control">
           <Filter /> All filters <ChevronDown />
-        </button>
+        </Button>
       </div>
       <div className="flex">
         <aside className="hidden w-[300px] shrink-0 border-r border-[#e6e6e6] bg-white lg:block">
           <div className="flex items-center justify-between border-b p-7 text-xl font-semibold">
-            Topics{" "}
-            <button className="rounded-lg border-2 border-blue-500 px-2">
-              ↕
-            </button>
+            Topics
           </div>
           <div className="flex items-center justify-between border-b px-8 py-5">
             New topic <Plus className="h-5 w-5 text-[#888]" />
@@ -96,17 +97,26 @@ export default function PromptsPage() {
               <span className="text-[#999]">Archived</span>
             </div>
             <div className="flex gap-2">
-              <button
-                onClick={() => setModalOpen(true)}
-                className="rounded-xl border border-[#e4e4e4] bg-white px-4 py-2 text-[#222] shadow-sm"
+              <Button
+                onClick={() => {
+                  posthog.capture("generate_prompts");
+                  setModalOpen(true);
+                }}
+                className="border border-[#e4e4e4] bg-white px-4 py-2 text-[#222] shadow-sm"
               >
                 <Sparkles className="mr-2 inline h-4 w-4" />
                 Generate prompts
-              </button>
-              <button className="rounded-xl bg-[#171717] px-4 py-2 text-white">
+              </Button>
+              <Button
+                onClick={() => {
+                  posthog.capture("add_prompt");
+                  setModalOpen(true);
+                }}
+                className="bg-[#171717] px-4 py-2 text-white"
+              >
                 <Plus className="mr-1 inline h-4 w-4" />
                 Add prompt
-              </button>
+              </Button>
             </div>
           </div>
           <div className="flex items-center gap-5 overflow-hidden border-b bg-white px-6 py-4">
@@ -178,9 +188,13 @@ export default function PromptsPage() {
                   <b>20 left</b> of your 80-prompt limit.
                 </p>
               </div>
-              <button onClick={() => setModalOpen(false)} aria-label="Close">
+              <Button
+                className="border-none bg-white px-4 py-2 text-[#222] text-sm"
+                onClick={() => setModalOpen(false)}
+                aria-label="Close"
+              >
                 <X className="h-4 w-4 text-[#999]" />
-              </button>
+              </Button>
             </div>
             <div className="mt-6 text-sm font-semibold">
               Total prompts tracking{" "}
@@ -198,15 +212,15 @@ export default function PromptsPage() {
             </div>
             <p className="mt-2 text-sm text-orange-500">20 prompts left</p>
             <div className="mt-5 flex justify-end gap-2">
-              <button
+              <Button
                 onClick={() => setModalOpen(false)}
-                className="rounded-lg border-2 border-blue-500 px-3 py-2 text-sm"
+                className="rounded-lg border border-[#e4e4e4] bg-white px-4 py-2 text-[#222] shadow-sm text-sm"
               >
                 Activate 20 that fit
-              </button>
-              <button className="rounded-lg bg-[#171717] px-3 py-2 text-sm text-white">
+              </Button>
+              <Button className="rounded-lg bg-[#171717] px-3 py-2 text-sm text-white">
                 See plans
-              </button>
+              </Button>
             </div>
           </div>
         </div>
