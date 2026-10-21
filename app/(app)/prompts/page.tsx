@@ -15,6 +15,7 @@ import {
 import Image from "next/image";
 import posthog from "posthog-js";
 import { Button } from "@/components/ui/button";
+import { useRouter } from "next/navigation";
 
 const prompts = [
   "Compare the durability of Nike basketballs versus Spalding for outdoor court play.",
@@ -28,6 +29,10 @@ const prompts = [
 
 export default function PromptsPage() {
   const [modalOpen, setModalOpen] = useState(false);
+  const [generatePrompts, setGeneratePrompts] = useState(false);
+  const [addPrompts, setAddPrompts] = useState(false);
+  const router = useRouter();
+
   return (
     <main className="min-h-screen bg-[#fbfbfb] text-[#191919]">
       <header className="flex h-[74px] items-center justify-between border-b border-[#e6e6e6] bg-white px-6 lg:px-9">
@@ -101,6 +106,7 @@ export default function PromptsPage() {
                 onClick={() => {
                   posthog.capture("generate_prompts");
                   setModalOpen(true);
+                  setGeneratePrompts(true);
                 }}
                 className="border border-[#e4e4e4] bg-white px-4 py-2 text-[#222] shadow-sm"
               >
@@ -109,8 +115,9 @@ export default function PromptsPage() {
               </Button>
               <Button
                 onClick={() => {
-                  posthog.capture("add_prompt");
+                  posthog.capture("add_prompts");
                   setModalOpen(true);
+                  setAddPrompts(true);
                 }}
                 className="bg-[#171717] px-4 py-2 text-white"
               >
@@ -177,51 +184,153 @@ export default function PromptsPage() {
           role="dialog"
           aria-modal="true"
         >
-          <div className="w-full max-w-md rounded-2xl bg-white p-6 shadow-2xl">
-            <div className="flex justify-between">
-              <div>
-                <h2 className="text-lg font-semibold">
-                  Only 20 of these prompts fit your plan
-                </h2>
-                <p className="mt-1 text-sm text-[#777]">
-                  You&apos;re activating <b>30 prompts</b>, but you have{" "}
-                  <b>20 left</b> of your 80-prompt limit.
-                </p>
-              </div>
-              <Button
-                className="border-none bg-white px-4 py-2 text-[#222] text-sm"
-                onClick={() => setModalOpen(false)}
-                aria-label="Close"
-              >
-                <X className="h-4 w-4 text-[#999]" />
-              </Button>
-            </div>
-            <div className="mt-6 text-sm font-semibold">
-              Total prompts tracking{" "}
-              <span className="float-right">60 / 80</span>
-            </div>
-            <div className="mt-2 flex gap-1">
-              {Array.from({ length: 40 }).map((_, i) => (
-                <span
-                  key={i}
-                  className={`h-4 flex-1 rounded-sm ${
-                    i < 30 ? "bg-orange-500" : "bg-[#eee]"
-                  }`}
-                />
-              ))}
-            </div>
-            <p className="mt-2 text-sm text-orange-500">20 prompts left</p>
-            <div className="mt-5 flex justify-end gap-2">
-              <Button
-                onClick={() => setModalOpen(false)}
-                className="rounded-lg border border-[#e4e4e4] bg-white px-4 py-2 text-[#222] shadow-sm text-sm"
-              >
-                Activate 20 that fit
-              </Button>
-              <Button className="rounded-lg bg-[#171717] px-3 py-2 text-sm text-white">
-                See plans
-              </Button>
-            </div>
+          <div className="w-full max-w-md rounded-2xl bg-white p-4 shadow-2xl">
+            {generatePrompts && (
+              <>
+                <div className="flex justify-between">
+                  <div>
+                    <h2 className="text-lg font-semibold">
+                      You've hit your 80-prompt limit
+                    </h2>
+                    <p className="mt-2 text-sm text-[#777]">
+                      You&apos;re tracking <b>80 prompts</b>, but you have tried
+                      to acitvate <b>30 more</b>. A larger plan tracks more
+                      prompts and unlocks more:
+                    </p>
+                  </div>
+                  <Button
+                    className="border-none bg-white px-4 py-2 text-[#222] text-sm"
+                    onClick={() => {
+                      setModalOpen(false);
+                      setAddPrompts(false);
+                      setGeneratePrompts(false);
+                      posthog.capture("prompts_cap_close");
+                    }}
+                    aria-label="Close"
+                  >
+                    <X className="h-4 w-4 text-[#999]" />
+                  </Button>
+                </div>
+                <div className="mt-6 text-sm font-semibold">
+                  Total prompts tracking{" "}
+                  <span className="float-right">80 / 80</span>
+                </div>
+                <div className="mt-2 flex gap-1">
+                  {Array.from({ length: 40 }).map((_, i) => (
+                    <span
+                      key={i}
+                      className={`h-4 flex-1 rounded-sm ${
+                        i < 40 ? "bg-orange-500" : "bg-[#eee]"
+                      }`}
+                    />
+                  ))}
+                </div>
+                <p className="mt-2 text-sm text-orange-500">0 prompts left</p>
+                <div className="mt-5 flex justify-end gap-2">
+                  <Button
+                    onClick={() => {
+                      setModalOpen(false);
+                      setAddPrompts(false);
+                      setGeneratePrompts(false);
+                      posthog.capture("prompts_cap_close");
+                    }}
+                    className="rounded-lg border border-[#e4e4e4] bg-white px-4 py-2 text-[#222] shadow-sm text-sm"
+                  >
+                    Maybe later
+                  </Button>
+                  <Button
+                    onClick={() => {
+                      setModalOpen(false);
+                      setAddPrompts(false);
+                      setGeneratePrompts(false);
+                      posthog.capture("prompts_cap_start_upgrade");
+                      router.push("#upgrade-plan");
+                    }}
+                    className="rounded-lg bg-[#171717] px-3 py-2 text-sm text-white"
+                  >
+                    See plans
+                  </Button>
+                </div>
+              </>
+            )}
+            {addPrompts && (
+              <>
+                <div className="flex justify-between">
+                  <div>
+                    <h2 className="text-lg">
+                      You've hit your <b>80-prompt limit</b>
+                    </h2>
+                    <p className="mt-2 text-sm text-orange-500">
+                      0 prompts left
+                    </p>
+                    <div className="w-full border-t border-[#e8e8e8] mt-4" />
+                    <div className="flex items-center mt-4">
+                      <h2 className="text-lg flex items-center font-semibold">
+                        Suggested prompt report{" "}
+                        <Sparkles className="ml-2 h-4 w-4" />
+                      </h2>
+                    </div>
+                    <p className="mt-2 text-md text-[#777]">
+                      You&apos;re suggested prompts has <b>60 new prompts</b> to
+                      help improve your brand&apos;s visibility:
+                    </p>
+                    <ul>
+                      <li className="mt-2 text-sm text-[#777]">
+                        • 18 prompts with commercial & transactional intent
+                      </li>
+                      <li className="mt-2 text-sm text-[#777]">
+                        • 7 prompts with high relative search volume
+                      </li>
+                      <li className="mt-2 text-sm text-[#777]">
+                        • 5 new topics relevant to your brand
+                      </li>
+                    </ul>
+                    <h3 className="mt-2 text-md text-[#777]">
+                      Upgrade to <b>track 100+ more prompts</b> and stay ahead
+                      of competitors.
+                    </h3>
+                  </div>
+                  <Button
+                    className="border-none bg-white px-1 py-1 text-[#222] text-sm"
+                    onClick={() => {
+                      setModalOpen(false);
+                      setAddPrompts(false);
+                      setGeneratePrompts(false);
+                      posthog.capture("prompts_cap_close");
+                    }}
+                    aria-label="Close"
+                  >
+                    <X className="h-2 w-2 text-[#999]" />
+                  </Button>
+                </div>
+                <div className="mt-5 flex justify-between gap-2">
+                  <Button
+                    onClick={() => {
+                      setModalOpen(false);
+                      setAddPrompts(false);
+                      setGeneratePrompts(false);
+                      posthog.capture("prompts_cap_explore_suggested");
+                      router.push("#suggested");
+                    }}
+                    className="rounded-lg border border-[#e4e4e4] bg-white px-4 py-2 text-[#222] shadow-sm text-sm"
+                  >
+                    Explore suggested
+                  </Button>
+                  <Button
+                    onClick={() => {
+                      setModalOpen(false);
+                      setAddPrompts(false);
+                      setGeneratePrompts(false);
+                      posthog.capture("prompts_cap_start_upgrade");
+                      router.push("#upgrade-plan");
+                    }}
+                    className="rounded-lg bg-[#171717] px-3 py-2 text-sm text-white"
+                  >
+                    Unlock 100 more prompts
+                  </Button>
+                </div>
+              </>
+            )}
           </div>
         </div>
       )}
